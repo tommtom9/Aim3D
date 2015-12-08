@@ -27,7 +27,6 @@ public class PlayerMovement : MonoBehaviour {
 
         vector3Add = controller.velocity.magnitude;
 
-        Debug.Log(controller.velocity.magnitude * visionrangeRange);
         lighting.range = maxVisionRange - (Mathf.Abs(vector3Add) * visionrangeRange);
     }
 
