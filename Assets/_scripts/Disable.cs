@@ -3,15 +3,10 @@ using System.Collections;
 
 public class Disable : MonoBehaviour {
 
-    Light light;
+    Light _lighting;
 	// Use this for initialization
 	void Start () {
-        light = GetComponent<Light>();
-        light.enabled = false;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	    
+        _lighting = GetComponent<Light>();
+        _lighting.enabled = false;
 	}
 }

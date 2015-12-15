@@ -9,7 +9,11 @@ public class PlayerMovement : MonoBehaviour {
     public float rotateSpeed = 3.0F;
     public float visionrangeRange = 3;
     public float maxVisionRange = 15;
+
+    public bool walking = false;
+
     private Light lighting;
+
 
     private float vector3Add;
     void Start()
@@ -19,6 +23,16 @@ public class PlayerMovement : MonoBehaviour {
     }
     void Update()
     {
+        if (controller.velocity.magnitude > 0.1)
+        {
+            walking = true;
+        }
+        else
+        {
+            walking = false;
+        }
+
+        Debug.Log(walking); 
 
         transform.Rotate(0, Input.GetAxis("Horizontal") * rotateSpeed, 0);
         Vector3 forward = transform.TransformDirection(Vector3.forward);
