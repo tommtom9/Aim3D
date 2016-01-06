@@ -7,7 +7,6 @@ public class EnemyAI : MonoBehaviour {
     public  List<Vector3>   path;
     public  GameObject      player;
             NavMeshAgent    _navMashA;
-            PlayerMovement  _playerMov;
 
     [SerializeField]
             float           _enemySightRange = 11;
@@ -20,7 +19,7 @@ public class EnemyAI : MonoBehaviour {
 
             float           _playerDis;
             float           _pathDis;
-            
+
             int             _pathCount = 0;
             
             bool            _canSeePlayer = false;
@@ -36,7 +35,6 @@ public class EnemyAI : MonoBehaviour {
 	void Start () {
         _navMashA = GetComponent<NavMeshAgent>();
         _navMashA.speed = _regularSpeed;
-        _playerMov = player.GetComponent<PlayerMovement>();
     }
 
 	void Update () {
@@ -80,12 +78,11 @@ public class EnemyAI : MonoBehaviour {
                     _canSeePlayer = true;
                 }
 
-                else if (_playerDis < _detectionRange && hit.transform.tag != "Wall" && _playerMov.walking)
+                else if (_playerDis < _detectionRange && hit.transform.tag != "Wall")
                 {
                     _navMashA.SetDestination(player.transform.position);
                 }
 
-                Debug.Log(Vector3.Distance(transform.position, _currentMovePiont));
                 if (Vector3.Distance(transform.position,_currentMovePiont) <= 3)
                 {
                     if (_canSeePlayer == false)
@@ -96,6 +93,11 @@ public class EnemyAI : MonoBehaviour {
                 }
             }
         }
+
+        if (_playerDis > _enemySightRange && _canSeePlayer == false)
+        {
+            _goPatrolling = true;
+        }
         _canSeePlayer = false;
     }
 
@@ -104,5 +106,4 @@ public class EnemyAI : MonoBehaviour {
         Gizmos.color = new Color(1,0,0,0.5f);
         Gizmos.DrawSphere((transform.position + _playerRayOffset), _detectionRange);
     }
-        
 }
