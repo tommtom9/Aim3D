@@ -13,7 +13,7 @@ public class EnemyAI : MonoBehaviour {
     [SerializeField]
             float           _regularSpeed = 2;
     [SerializeField]
-            float           _chaseSpeed = 4;
+            float           _chaseSpeed = 4; 
     [SerializeField]
             float           _detectionRange = 4;
 
@@ -22,7 +22,7 @@ public class EnemyAI : MonoBehaviour {
 
             int             _pathCount = 0;
             
-            bool            _canSeePlayer = false;
+     public bool            canSeePlayer = false;
             bool            _goPatrolling = true;
 
     [SerializeField]
@@ -75,7 +75,7 @@ public class EnemyAI : MonoBehaviour {
                     _navMashA.speed = _chaseSpeed;
                     _currentMovePiont = player.transform.position;
                     _navMashA.SetDestination(player.transform.position);
-                    _canSeePlayer = true;
+                    canSeePlayer = true;
                 }
 
                 else if (_playerDis < _detectionRange && hit.transform.tag != "Wall")
@@ -85,7 +85,7 @@ public class EnemyAI : MonoBehaviour {
 
                 if (Vector3.Distance(transform.position,_currentMovePiont) <= 3)
                 {
-                    if (_canSeePlayer == false)
+                    if (canSeePlayer == false)
                     {
                         _goPatrolling = true;
                         _navMashA.speed = _regularSpeed;   
@@ -94,11 +94,11 @@ public class EnemyAI : MonoBehaviour {
             }
         }
 
-        if (_playerDis > _enemySightRange && _canSeePlayer == false)
+        if (_playerDis > _enemySightRange && canSeePlayer == false)
         {
             _goPatrolling = true;
         }
-        _canSeePlayer = false;
+        canSeePlayer = false;
     }
 
     void OnDrawGizmos()
