@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 
 public class PlayerController : MonoBehaviour 
 {
+
+    //[SerializeField]
+    //private Image _staminaBar;
 
     private CharacterController _cc;
     private GameObject _camera;
@@ -18,7 +22,12 @@ public class PlayerController : MonoBehaviour
     private float _playerJumpSpeed = 10f;
     private float _upVisionRange = 45f;
     private float _downVisionRange = 70f;
-    private float _verticalRotation = 0;
+    private float _verticalRotation = 0f;
+
+    private Image _staminaBar;
+
+    private float _stamina;
+    private float _maxStamina = 2f;
 
     private bool _isCrouching = false;
 
@@ -26,19 +35,22 @@ public class PlayerController : MonoBehaviour
     private float y = 0f;
     private float gravity = 20f;
 
-	void Awake ()
+	void Start ()
     {
         _cc = GetComponent<CharacterController>();
         _camera = GameObject.Find("Main Camera");
         _playerMoveSpeed = _playerNormalMoveSpeed;
         _normalCameraPos = _camera.transform.localPosition;
+
+        _staminaBar = GameObject.Find("StaminaBar").GetComponent<Image>();
+
+        _stamina = _maxStamina;
 	}
 	
 	void FixedUpdate ()
     {
         CameraRotation();
         Movement();
-        PickupItem();
 	}
 
     void CameraRotation()
@@ -54,7 +66,6 @@ public class PlayerController : MonoBehaviour
         
         _camera.transform.eulerAngles = new Vector3(_verticalRotation, y, 0f);
         transform.eulerAngles = new Vector3(0f, y, 0f);
-
     }
 
     void Movement()
@@ -77,13 +88,40 @@ public class PlayerController : MonoBehaviour
 
         if (_isCrouching == false)
         {
-            if (Input.GetButtonDown("JoystickLB"))
+            if (Input.GetButton("JoystickLB") && _stamina > 0)
             {
                 _playerMoveSpeed = _playerRunSpeed;
+                _stamina -= Time.deltaTime;
+                _staminaBar.fillAmount -= 0.5f * Time.deltaTime;
+
             }
-            else if (Input.GetButtonUp("JoystickLB"))
+            else
             {
                 _playerMoveSpeed = _playerNormalMoveSpeed;
+            }
+
+
+            if(_stamina < 0)
+            {
+                _playerMoveSpeed = _playerNormalMoveSpeed;
+                _stamina = 0;
+            }
+            
+            if (Input.GetButtonUp("JoystickLB"))
+            {
+                _playerMoveSpeed = _playerNormalMoveSpeed;
+            }
+            
+            if(_stamina < _maxStamina)
+            {
+                RegenerateStamina();
+            }
+        }
+        else if(_isCrouching == true)
+        {
+            if(_stamina < _maxStamina)
+            {
+                RegenerateStamina();
             }
         }
 
@@ -112,21 +150,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void PickupItem()
+    void RegenerateStamina()
     {
-        if (Input.GetButtonDown("JoystickA"))
-        {
-            Debug.Log("A is pressed");
-            /*
-            Vector3 fwd = transform.TransformDirection(Vector3.forward);
-            if (Physics.Raycast(transform.position, fwd, out hitInfo, 10))
-            {
-                if (hitInfo.collider.tag == "Pickup")
-                {
-                    // pak de pickup op
-                }
-            }
-            */
-        }
+        _stamina += Time.deltaTime / 2.5f;
+        _staminaBar.fillAmount += 0.5f * Time.deltaTime / 2.5f;
     }
 }
